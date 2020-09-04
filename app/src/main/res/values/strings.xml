@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">MyGif</string>
+    <string name="tab1">世界</string>
+    <string name="tab2">关注</string>
+    <string name="tab3">热门</string>
+    <string name="search_hint">搜索用户昵称或内容</string>
+    <string name="publish_title">发布趣图</string>
+    <string name="say">说点什么吧 ...</string>
+    <string name="no_consider">您的关注内容空空如也</string>
+    <string name="go_consider">去关注</string>
+    <string name="edit">编辑个人简介</string>
+    <string name="name">昵称</string>
+    <string name="introduction">个人简介</string>
+    <string name="save">保存</string>
+</resources>

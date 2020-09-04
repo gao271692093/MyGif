@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="tabBackground">#03DAC5</color>
+    <color name="tabIndicatorColor">#FBFBFB</color>
+    <color name="tabTextColor">#F1EFEF</color>
+    <color name="tabSelectedTextColor">#FBFBFB</color>
+    <color name="scrim">#99323232</color>
+    <color name="ripple_dark_grey">#77555555</color>
+    <color name="ripple_dark_grey_pressed">#77333333</color>
+</resources>

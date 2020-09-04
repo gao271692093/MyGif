@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".activity.FruitActivity">
+
+    <!--android:fitsSystemWindows=”true” (触发View的padding属性来给系统窗口留出空间),系统窗口包括系统状态栏、导航栏、输入法等-->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:fitsSystemWindows="true"
+        >
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            <!--app:contentScrim="?attr/colorPrimary" 设置完全折叠时的颜色-->
+
+            <ImageView
+                android:id="@+id/fruit_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:fitsSystemWindows="true"
+                app:layout_collapseMode="parallax"/>
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:layout_collapseMode="pin"/>
+            <!--collapseMode属性用于指定当前空间在CollapsingToolbarLayout折叠过程中的折叠模式，pin表示在折叠的过程中位置始终保持不变，ImageView指定成parallax，表示会在折叠的过程中产生一定的错位偏移-->
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+        <!--app:contentScrim属性用于指定CollapsingToolbarLayout在趋于折叠状态以及折叠之后的背景色-->
+        <!--app:layout_scrollFlags属性中的scroll表示CollapsingToolbarLayout会随着水果内容详情的滚动一起滚动，exitUntilCollapsed表示当CollapsingToolbarLayout随着滚动完成折叠之后就保留在界面上，不在移出屏幕-->
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="35dp"
+                app:cardCornerRadius="4dp">
+
+                <TextView
+                    android:id="@+id/fruit_content_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/nav_mail"
+        app:layout_anchor="@id/appBar"
+        app:layout_anchorGravity="bottom|end"/>
+    <!--anchor属性是指定一个锚点，设置成AppBarLayout可以让悬浮按钮出现在水果标题栏的区域内，anchorGravity为悬浮按钮定位的-->
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
