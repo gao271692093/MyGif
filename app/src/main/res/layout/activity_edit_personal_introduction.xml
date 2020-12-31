@@ -65,7 +65,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="逆风"
                     android:textSize="20sp"
                     android:textColor="@color/tabSelectedTextColor"
                     android:layout_marginTop="140dp"/>
@@ -101,7 +100,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="逆风"/>
+                android:theme="@style/MyEditText"/>
 
             <TextView
                 android:id="@+id/text_name"
@@ -117,7 +116,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/introduction"
             android:layout_marginTop="15dp"
-            android:layout_marginLeft="15dp"/>
+            android:layout_marginLeft="15dp"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -129,7 +129,9 @@
                 android:id="@+id/edit_introduction"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:hint="@string/hint_introduction"
+                android:theme="@style/MyEditText"/>
 
             <TextView
                 android:id="@+id/text_introduction"

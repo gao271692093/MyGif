@@ -35,7 +35,6 @@ public class MyLifecycleObserver implements LifecycleObserver {
         Log.i(TAG,"onCreate");
     }
 
-
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void onStart(){
         Log.i(TAG,"onStart");
@@ -43,12 +42,12 @@ public class MyLifecycleObserver implements LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     public void onResume(){
-        if(TAG.equals("HotFragment")) {
-            HttpProxy.getInstance().get("http://bing.getlove.cn/latelyBingImageStory",null, null, false, ((HotFragment)object).getCallBack());
-        }
-        if(TAG.equals("WorldFragment")) {
-            HttpProxy.getInstance().post(MainActivity.BASE_URL + "teacher/" + "index/recommend", null, WorldFragment.maps, false, ((WorldFragment)object).getCallBack());
-        }
+//        if(TAG.equals("HotFragment")) {
+//            HttpProxy.getInstance().get("http://bing.getlove.cn/latelyBingImageStory",null, null, false, ((HotFragment)object).getCallBack());
+//        }
+//        if(TAG.equals("WorldFragment")) {
+//            HttpProxy.getInstance().post(MainActivity.BASE_URL + "teacher/" + "index/recommend", null, WorldFragment.maps, false, ((WorldFragment)object).getCallBack());
+//        }
         Log.i(TAG,"onResume");
     }
 

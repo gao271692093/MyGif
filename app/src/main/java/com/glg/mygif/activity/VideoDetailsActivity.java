@@ -20,18 +20,17 @@ import java.util.concurrent.ExecutionException;
 
 public class VideoDetailsActivity extends BaseActivity {
 
-    private ZoomImageView zoomImageView;
-
     private Bitmap bitmap;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final ActivityVideoDetailsBinding activityVideoDetailsBinding = DataBindingUtil.setContentView(VideoDetailsActivity.this, R.layout.activity_video_details);
         //setContentView(R.layout.activity_video_details);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setupWindowAnimations();
@@ -39,15 +38,14 @@ public class VideoDetailsActivity extends BaseActivity {
 
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
-        final String coverUrl = bundle.getString("coverUrl");
+        final String url = bundle.getString("url");
         final String name = bundle.getString("name");
-        final int position = bundle.getInt("position");
         //zoomImageView = findViewById(R.id.zoomImageView);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    bitmap = Glide.with(VideoDetailsActivity.this).asBitmap().load(coverUrl).centerCrop().into(1920, 1080).get();
+                    bitmap = Glide.with(VideoDetailsActivity.this).asBitmap().load(url).centerCrop().into(1920, 1080).get();
 //                    activityVideoDetailsBinding.zoomImageView.setImageBitmap(bitmap);
 //                    activityVideoDetailsBinding.imageContent.setText(name);
                     runOnUiThread(new Runnable() {

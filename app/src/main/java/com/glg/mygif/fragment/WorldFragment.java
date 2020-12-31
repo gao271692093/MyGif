@@ -1,18 +1,20 @@
 package com.glg.mygif.fragment;
 
-import android.app.ActivityOptions;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.transition.Explode;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,20 +24,18 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.ekwing.dataparser.json.CommonJsonBuilder;
 import com.ekwing.http.common.HttpProxy;
 import com.ekwing.http.common.interfaces.CallBack;
-import com.glg.mygif.entity.Data;
+import com.glg.mygif.activity.VideoActivity;
+import com.glg.mygif.adapter.VideoNewAdapter;
 import com.glg.mygif.adapter.ImagesAdapter;
-import com.glg.mygif.activity.MainActivity;
 import com.glg.mygif.R;
-import com.glg.mygif.entity.RecommendBean;
-import com.glg.mygif.entity.RecommendEntity;
-import com.glg.mygif.adapter.VideoAdapter;
-import com.glg.mygif.activity.VideoDetailsActivity;
+import com.glg.mygif.entity.VideoEntity;
 import com.glg.mygif.lifecycle.MyLifecycleObserver;
+import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import static com.glg.mygif.utils.DensityUtil.dp2px;
 
 /**
  * Description:
@@ -47,25 +47,27 @@ import java.util.Map;
  */
 public class WorldFragment extends Fragment {
 
-    private String URL = MainActivity.BASE_URL + "teacher/" + "index/recommend";
+    private int count = 10;
 
-    private RecommendBean recommendBean;
+    private int page = 1;
 
-    private Data data;
+    private String URL = "https://api.apiopen.top/getJoke?page=";
 
-    private List<RecommendEntity> multipleItems;
+    private Activity activity;
 
-    private List<RecommendEntity.ListBean> list = new ArrayList<>();
+    private VideoEntity videoEntity;
 
-    private List<RecommendEntity.ListBean> listBeanList = new ArrayList<>();
+    private List<VideoEntity.ResultBean> resultBeanList = new ArrayList<>();
 
     private RecyclerView recyclerView;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    public static Map<String, String> maps = new HashMap<>();
+    private VideoNewAdapter videoAdapter;
 
-    private VideoAdapter videoAdapter = new VideoAdapter(this, list);
+    private int notify_start = 0;
+
+    private int lastVisibleItem[];
 
     private CallBack callBack = new CallBack() {
         @Override
@@ -75,21 +77,15 @@ public class WorldFragment extends Fragment {
 
         @Override
         public void onSuccess(String result) {
-            if(!result.contains("error_msg")) {
-                data = CommonJsonBuilder.toObject(result, Data.class);
-                recommendBean = data.getData();
-                multipleItems = recommendBean.getList();
-                //list.clear();
-                int i = 0, j = 0;
-                for(i = 0;i < multipleItems.size(); i += 1) {
-                    listBeanList = multipleItems.get(i).getList();
-                    for(j = 0; j < listBeanList.size(); j += 1) {
-                        list.add(listBeanList.get(j));
-                    }
-                }
-                videoAdapter.setItemList(list);
+            videoEntity = CommonJsonBuilder.toObject(result, VideoEntity.class);
+            resultBeanList = videoEntity.getResult();
+            videoAdapter.setResultBeanList(resultBeanList);
+            if(swipeRefreshLayout.isRefreshing()) {
                 videoAdapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
+            } else {
+                videoAdapter.notifyItemRangeInserted(notify_start, 10);
+                notify_start += 10;
             }
             //Toast.makeText(getActivity(), "请求成功" + recommendBean.getDefaultGrade() + (recommendBean.getList() == null), Toast.LENGTH_SHORT).show();
         }
@@ -110,9 +106,17 @@ public class WorldFragment extends Fragment {
         }
     };
 
+    public WorldFragment() {
+    }
+
+    public WorldFragment(Activity activity) {
+        this.activity = activity;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        videoAdapter = new VideoNewAdapter(this, resultBeanList, getImageWidth());
         getLifecycle().addObserver(new MyLifecycleObserver(this, "WorldFragment"));
     }
 
@@ -127,12 +131,14 @@ public class WorldFragment extends Fragment {
         videoAdapter.setOnItemClickListener(new ImagesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                RecommendEntity.ListBean listBean = list.get(position);
-                Intent intent = new Intent(getActivity(), VideoDetailsActivity.class);
+                VideoEntity.ResultBean resultBean = resultBeanList.get(position);
+                Intent intent = new Intent(getActivity(), VideoActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("coverUrl", listBean.getCoverurl());
-                bundle.putString("name", listBean.getName());
-                bundle.putInt("position", position);
+                bundle.putString("name", resultBean.getName());
+                bundle.putString("url", resultBean.getVideo());
+                bundle.putString("header", resultBean.getHeader());
+                bundle.putString("like_count", resultBean.getUp());
+                bundle.putString("image", resultBean.getThumbnail());
                 intent.putExtras(bundle);
                 //startActivity(intent);
 //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -152,16 +158,35 @@ public class WorldFragment extends Fragment {
 
             }
         });
-//        recyclerView = view.findViewById(R.id.world_recyclerView);
-//        recyclerView.setAdapter(videoAdapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager)recyclerView.getLayoutManager();
+                if(lastVisibleItem == null) {
+                    lastVisibleItem = new int[staggeredGridLayoutManager.getSpanCount()];
+                }
+                staggeredGridLayoutManager.findLastCompletelyVisibleItemPositions(lastVisibleItem);
+                int lastVisiblePosition = findMax(lastVisibleItem);
+                int visibleItemCount = staggeredGridLayoutManager.getChildCount();
+                int totalItemCount = staggeredGridLayoutManager.getItemCount();
+                Log.d("测试", lastVisiblePosition + "============" + totalItemCount);
+
+                if (lastVisiblePosition == totalItemCount - 1) {
+                    recyclerView.stopScroll();
+                    HttpProxy.getInstance().get(URL + page + "&count=" + (count += 10) + "&type=video",null, null, false, callBack);
+                }
+            }
+        });
 
         swipeRefreshLayout = view.findViewById(R.id.world_refresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                HttpProxy.getInstance().post(URL, null, maps, false, callBack);
+                swipeRefreshLayout.setRefreshing(true);
+                HttpProxy.getInstance().post(URL + ++page + "&count=" + count + "&type=video", null, null, false, callBack);
             }
         });
+        HttpProxy.getInstance().post(URL + page + "&count=" + count + "&type=video", null, null, false, callBack);
         return view;
     }
 
@@ -224,12 +249,44 @@ public class WorldFragment extends Fragment {
 //        return view;
 //    }
 
-    static {
-        maps.put("uid", "201817110");
-        maps.put("token", "OMjAxODE3MTEwIyMwMTAyNzQ1NDI3IyM4NDg1M2U2OWZhMmM2MWVhMjhhMDU2YjMzODdlNTFjZiMjNDVhZGVmOTI0YzJhNGYzYjA4NzBiOGUyYzIwNjMyNzAjIzE2MDE2MjM4MDQjIzIjIzEjI2Vrd190ZWFjaGVyh");
-        maps.put("v", "3.0");
-        maps.put("driverCode", "2.0.1");
-        maps.put("os", "android");
-        maps.put("osv", "10");
+    public void limitScroll() {
+//        int firstCompletelyVisibleItemPosition;
+//        int lastCompletelyVisibleItemPosition;
+//        int totalItemCount;
+//        LinearLayoutManager linearLayoutManager;
+//        View appBarChildAt;
+//        AppBarLayout.LayoutParams appBarParams;
+//        firstCompletelyVisibleItemPosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
+//        lastCompletelyVisibleItemPosition = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+//        totalItemCount = linearLayoutManager.getItemCount();
+//
+//        Log.d("测试", firstCompletelyVisibleItemPosition + "===============" + lastCompletelyVisibleItemPosition + "=========" + totalItemCount);
+//
+//        if(firstCompletelyVisibleItemPosition == 0 && lastCompletelyVisibleItemPosition == totalItemCount - 1) {
+//            Log.d("测试限制AppBar滑动", firstCompletelyVisibleItemPosition + "===============" + lastCompletelyVisibleItemPosition + "=========" + totalItemCount);
+//            appBarChildAt = appbar.getChildAt(0);
+//            appBarParams = (AppBarLayout.LayoutParams) appBarChildAt.getLayoutParams();
+//            appBarParams.setScrollFlags(0);
+//            appBarChildAt.setLayoutParams(appBarParams);
+//        }
+    }
+
+    private int findMax(int[] lastPositions) {
+        int max = lastPositions[0];
+        for (int value : lastPositions) {
+            if (value > max) {
+                max = value;
+            }
+        }
+
+        return max;
+    }
+
+    private int getImageWidth() {
+        WindowManager windowManager = (WindowManager)(activity.getSystemService(Context.WINDOW_SERVICE));
+        DisplayMetrics matrix = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(matrix);
+        int columnWidth = matrix.widthPixels / 2;
+        return columnWidth - dp2px(10f);
     }
 }

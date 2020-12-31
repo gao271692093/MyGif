@@ -11,4 +11,20 @@
 
     <style name="FruitActivityTheme" parent="AppTheme"></style>
 
+    <style name="MainActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+<!--        <item name="android:windowBackground">@mipmap/launcher2</item>-->
+        <!--        <item name="windowNoTitle">true</item>-->
+        <!--        <item name="android:windowFullscreen">true</item>-->
+        <item name="colorPrimaryDark">@color/launcher</item>
+        <item name="android:navigationBarColor">@color/launcher</item>
+    </style>
+
+    <style name="TranslucentTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <!--Android 5.x开始需要把颜色设置透明，否则导航栏会呈现系统默认的浅灰色-->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
 </resources>

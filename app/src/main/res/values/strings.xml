@@ -12,4 +12,7 @@
     <string name="name">昵称</string>
     <string name="introduction">个人简介</string>
     <string name="save">保存</string>
+    <string name="footer_star">*</string>
+    <string name="footer">没有更多作品了</string>
+    <string name="hint_introduction">请输入个人简介</string>
 </resources>

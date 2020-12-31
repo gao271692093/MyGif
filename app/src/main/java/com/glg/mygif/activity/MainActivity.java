@@ -2,6 +2,7 @@ package com.glg.mygif.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
@@ -9,14 +10,18 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -44,12 +49,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class MainActivity extends BaseActivity {
+//实现LoaderManager.LoaderCallbacks<Void>接口并调用reportFullyDrawn()方法是为了将启动Activity的时间在日志中打印出来，目测无效
+public class MainActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Void> {
 
     public static int RESPONSE_CODE = 0x11;
     public static int RESPONSE_PUBLISH = 0x21;
     public static int REQUEST_CODE = 0x12;
-    public static String BASE_URL = "https://mapi.ekwing.com/";
     private DrawerLayout mDrawerLayout;
     public static Fruit[] fruits = {new Fruit("Apple", R.drawable.apple),new Fruit("Pear", R.drawable.pear),new Fruit("Strawberry", R.drawable.strawberry),
             new Fruit("Mango", R.drawable.mango),new Fruit("Orange", R.drawable.orange),new Fruit("Grape", R.drawable.grape),
@@ -74,13 +79,15 @@ public class MainActivity extends BaseActivity {
 
     //private EditText search_text;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//显示状态栏
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -169,6 +176,18 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_publish:
                         startActivity(new Intent(MainActivity.this, PublishActivity.class));
                         break;
+                    case R.id.nav_personal:
+                        Intent intent = new Intent(MainActivity.this, PersonalActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("username", username.getText().toString());
+                        bundle.putString("introduction", edit_introduction.getText().toString());
+                        bundle.putParcelable("bitmap", bitmap);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                        break;
+                    case R.id.nav_recommend:
+                    case R.id.nav_box:
+                    case R.id.nav_settings:
                     default:
                         mDrawerLayout.closeDrawers();
                 }
@@ -191,11 +210,13 @@ public class MainActivity extends BaseActivity {
                 bundle.putString("introduction", edit_introduction.getText().toString());
                 bundle.putParcelable("bitmap", bitmap);
                 intent.putExtras(bundle);
-                startActivityForResult(intent, REQUEST_CODE);
+                startActivityForResult(intent, 0x12);
             }
         });
 
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -206,7 +227,7 @@ public class MainActivity extends BaseActivity {
                 username.setText(bundle.getString("name"));
             }
             if(!bundle.getString("introduction").equals("")) {
-                edit_introduction.setText(bundle.getString("introduction"));
+                edit_introduction.setText("简介：" + bundle.getString("introduction"));
             }
             bitmap = bundle.getParcelable("photo");
             if(bitmap != null) {
@@ -288,7 +309,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initFragments() {
-        WorldFragment worldFragment = new WorldFragment();
+        WorldFragment worldFragment = new WorldFragment(this);
         fragments.add(worldFragment);
         ConsiderFragment considerFragment = new ConsiderFragment();
         fragments.add(considerFragment);
@@ -313,5 +334,22 @@ public class MainActivity extends BaseActivity {
             finish();
             System.exit(0);
         }
+    }
+
+    @NonNull
+    @Override
+    public Loader<Void> onCreateLoader(int id, @Nullable Bundle args) {
+        return null;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public void onLoadFinished(@NonNull Loader<Void> loader, Void data) {
+        reportFullyDrawn();
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Void> loader) {
+
     }
 }

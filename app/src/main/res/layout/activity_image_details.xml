@@ -10,7 +10,8 @@
     <com.glg.mygif.view.ZoomImageView
         android:id="@+id/zoomImageView"
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
+        android:layout_height="200dp"
+        />
 
     <WebView
         android:id="@+id/webView"

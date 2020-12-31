@@ -7,19 +7,41 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="SearchActivity">
+    <style name="SearchActivity" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@color/scrim</item><!--设置dialog的背景-->
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowContentOverlay">@null</item><!--设置遮盖（启动activity时短暂显示的画面）-->
         <item name="android:windowIsFloating">false</item><!--设置是否悬浮在activity之上-->
         <item name="android:windowIsTranslucent">true</item><!--设置是否半透明-->
-        <item name="android:windowNoTitle">true</item>
+<!--        <item name="android:windowNoTitle">true</item>-->
+<!--        <item name="android:windowFullscreen">true</item>-->
         <item name="android:windowAnimationStyle">@style/SearchWindowAnimations</item>
     </style>
 
     <style name="SearchWindowAnimations">
         <item name="android:windowEnterAnimation">@null</item>
         <item name="android:windowExitAnimation">@anim/fade_out_rapidly</item>
+    </style>
+    
+    <style name="MainActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+<!--        <item name="android:windowBackground">@mipmap/launcher2</item>-->
+<!--        <item name="windowNoTitle">true</item>-->
+<!--        <item name="android:windowFullscreen">true</item>-->
+        <item name="colorPrimaryDark">@color/launcher</item>
+        <item name="android:navigationBarColor">@color/launcher</item>
+    </style>
+    
+    <style name="MyEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+    </style>
+
+    <style name="TranslucentTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <!--Android 5.x开始需要把颜色设置透明，否则导航栏会呈现系统默认的浅灰色-->
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
 </resources>

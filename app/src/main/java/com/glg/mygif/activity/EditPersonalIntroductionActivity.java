@@ -61,13 +61,14 @@ public class EditPersonalIntroductionActivity extends BaseActivity implements Vi
     private String username;
     private String introductions;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_personal_introduction);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -100,6 +101,11 @@ public class EditPersonalIntroductionActivity extends BaseActivity implements Vi
                     edit_name.setText(s.subSequence(0, 12));
                     edit_name.setSelection(12);
                     text_name.setText("12/12");
+                }
+                if(s.equals("") || s == null) {
+                    name.setText("");
+                } else {
+                    name.setText(s);
                 }
             }
 
@@ -158,17 +164,21 @@ public class EditPersonalIntroductionActivity extends BaseActivity implements Vi
         introductions = bundle.getString("introduction");
         bitmap = bundle.getParcelable("bitmap");
         name.setText(username);
-        edit_name.setText(username);
+        if(username.equals("未填写")) {
+            edit_name.setHint("请填写您的昵称");
+        } else {
+            edit_name.setText(username);
+        }
         if(bitmap != null) {
             icon_image.setImageBitmap(bitmap);
         }
-        if(introductions.equals("编辑个人简介")) {
+        if(introductions.equals("编辑个人简介") || introductions.equals("这个人很懒，什么都没有留下")) {
             edit_introduction.setText("");
             introduction.setText("");
             introductions = "";
         } else {
-            edit_introduction.setText(bundle.getString("introduction"));
-            edit_introduction.setSelection(bundle.getString("introduction").length());
+            edit_introduction.setText(introductions.substring(3));
+            edit_introduction.setSelection(introductions.substring(3).length());
         }
     }
 

@@ -17,7 +17,9 @@ import android.webkit.WebViewClient;
 
 import com.bumptech.glide.Glide;
 import com.glg.mygif.R;
+import com.glg.mygif.utils.StatusBarUtil;
 import com.glg.mygif.view.ZoomImageView;
+import com.gyf.immersionbar.ImmersionBar;
 
 import java.util.concurrent.ExecutionException;
 
@@ -29,13 +31,18 @@ public class ImageDetailsActivity extends BaseActivity {
 
     private Bitmap bitmap;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_details);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
+        //ImmersionBar.with(this).fullScreen(true).fitsSystemWindows(true).init();
+
+        //StatusBarUtil.setStatusBarColor(this, R.color.launcher);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setupWindowAnimations();

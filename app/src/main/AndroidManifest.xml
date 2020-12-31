@@ -10,32 +10,62 @@
         android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:resizeableActivity="true"
+        android:maxAspectRatio="2.4"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".activity.BaseActivity"></activity>
-        <activity android:name=".activity.VideoDetailsActivity" android:launchMode="singleTop" />
-        <activity android:name=".activity.ImageDetailsActivity" android:launchMode="singleTop" />
+        <activity android:name=".activity.VideoActivity"></activity>
+        <activity android:name=".activity.PersonalActivity"
+            android:theme="@style/TranslucentTheme"/>
+        <meta-data
+            android:name="android:notch_support"
+            android:value="true" />
+
+        <!--ImmersionBar-->
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.4" />
+
+        <!--适配华为（huawei）刘海屏-->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true"/>
+        <!--适配小米（xiaomi）刘海屏-->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait|landscape" />
+
+<!--        <meta-data-->
+<!--            android:name="UMENG_CHANNEL"-->
+<!--            android:value="${UMENG_CHANNEL_VALUE}" />-->
+
+        <activity android:name=".activity.BaseActivity" />
+        <activity
+            android:name=".activity.VideoDetailsActivity"
+            />
+        <activity
+            android:name=".activity.ImageDetailsActivity"
+            android:theme="@style/TranslucentTheme"/>
         <activity
             android:name=".activity.EditPersonalIntroductionActivity"
-            android:launchMode="singleTop" />
+            />
         <activity
             android:name=".activity.GifActivity"
-            android:launchMode="singleTop" />
+            />
         <activity
             android:name=".activity.PublishActivity"
-            android:launchMode="singleTop" />
+            />
         <activity
             android:name=".activity.SearchActivity"
-            android:launchMode="singleTop"
             android:theme="@style/SearchActivity" />
         <activity
             android:name=".activity.FruitActivity"
-            android:launchMode="singleTop"
             android:theme="@style/FruitActivityTheme" />
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.MainActivity"
+            android:theme="@style/MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

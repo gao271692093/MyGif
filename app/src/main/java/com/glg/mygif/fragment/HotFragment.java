@@ -258,6 +258,7 @@ public class HotFragment extends Fragment {
                 swipeRefreshLayout.setRefreshing(true);
             }
         });
+        HttpProxy.getInstance().get("http://bing.getlove.cn/latelyBingImageStory",null, null, false, callBack);
         return view;
     }
 
